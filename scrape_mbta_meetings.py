@@ -42,20 +42,30 @@ len(meetings)
 #    with CSS class 'c-content-teaser__date'
 # 3. The location of the meeting is found in the <div> element within the containing <div>
 #    with CSS class 'c-content-teaser__location'
+# 4. The (server-relative) URL for the meeting's webpage is found in the 'href' property
+#    of the <a> tag with CSS class 'u-linked-card__primary-link' within the containing <div>
 for meeting in meetings:
     title = meeting.find('h3').contents
     date = meeting.find('div', class_="c-content-teaser__date").contents
     location = meeting.find('div', class_="c-content-teaser__location").contents
+    anchor = meeting.find('a', class_="u-linked-card__primary-link")
+    meeting_url = anchor.get('href')
     # Eyeball sanity check
     print(title)
     print(date)
     print(location)
+    print(meeting_url)
 #
 
-# Looks good!
-# Let's clean up any leading and trailing white-space (including '\n') in those strings,
-# and save the whole kit-and-kaboodle in a list of dicts.
-#
+# List in which we'll accumulate stuff to write out to CSV
+output_data = []
+
+# Looks pretty good.
+# But there are two things we need to tidy-up:
+# 1. Let's clean up any leading and trailing white-space (including '\n') in those strings,
+#    and save the whole kit-and-kaboodle in a list of dicts.
+# 2. The URL for each meeting's webpage is relative to the root of the MBTA server,
+#    so we'll need to prepend 'http://www.mbta.com'/ in order to get a usable URL
 for meeting in meetings:
     tmp = meeting.find('h3').contents
     title = tmp[0].strip()
@@ -63,11 +73,14 @@ for meeting in meetings:
     date = tmp[0].strip()
     tmp = meeting.find('div', class_="c-content-teaser__location").contents
     location = tmp[0].strip()
+    anchor = meeting.find('a', class_="u-linked-card__primary-link")
+    meeting_url = 'http://www.mbta.com/' + anchor.get('href')
     # Eyeball sanity check
     print(title)
     print(date)
     print(location)
-    record = { 'title' : title, 'date' : date, 'location' : location }
+    print(meeting_url)
+    record = { 'title' : title, 'date' : date, 'location' : location, 'url' : meeting_url }
     output_data.append(record)
 #
 
@@ -77,11 +90,11 @@ len(output_data)
 # Output the list of dicts as a CSV file.
 output_fn = r'C:/Users/ben_k/work_stuff/mbta_meetings.csv'
 with open(output_fn, 'w', newline='') as csvfile:
-    fieldnames = ['title', 'date', 'location']
+    fieldnames = ['title', 'date', 'location', 'url']
     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
     writer.writeheader()
     for record in output_data:
-        writer.writerow({'title': record['title'], 'date': record['date'], 'location' : record['location']})
+        writer.writerow({'title': record['title'], 'date': record['date'], 'location' : record['location'], 'url' : record['url']})
     #
 #
 
