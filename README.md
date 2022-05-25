@@ -6,7 +6,7 @@ illustrating how data can be 'scraped' from the MBTA meetings website in Python 
 the [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/) package.
 
 As is the case with the example written in R (and indeed pretty much _any_ screen-scraping program), this script relies upon knowledge of
-the structure of the HTML delivered by the MBTA meetings website. If the structure changes, the script will no longer work.
+the structure of the HTML produced by the website in quesiton. __If the page structure changes, the script will no longer work.__
 
 In general, some familiarity with HTML and CSS is required in order to write an HTML 'screen-scraper.' 
 
