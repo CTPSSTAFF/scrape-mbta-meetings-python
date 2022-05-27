@@ -2,7 +2,7 @@
 # coding: utf-8
 # Scrape the MBTA meetings website using Python's BeautifulSoup package
 
-# Import required pacages
+# Import required packages
 import urllib3
 from bs4 import BeautifulSoup
 import csv
